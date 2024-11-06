@@ -31,7 +31,7 @@ void AMatchGameMode::BeginPlay()
 		GEngine->AddOnScreenDebugMessage(
 			-1,
 			3.f,
-			FColor::Red,
+			FColor::Cyan,
 			PlayerStart->GetFName().ToString()
 		);
 	}
