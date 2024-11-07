@@ -32,6 +32,17 @@ void USmashCharacterState::StateInit(USmashCharacterStateMachine* InStateMachine
 		);
 }
 
+void USmashCharacterState::StateEnter(ESmashCharacterStateID PreviousStateID)
+{
+	
+}
+
+void USmashCharacterState::StateExit(ESmashCharacterStateID NextStateID)
+{
+	
+}
+
+
 
 
 

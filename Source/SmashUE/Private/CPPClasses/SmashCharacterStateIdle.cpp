@@ -8,3 +8,23 @@ ESmashCharacterStateID USmashCharacterStateIdle::GetStateID()
 	return ESmashCharacterStateID::Idle;
 }
 
+void USmashCharacterStateIdle::StateEnter(ESmashCharacterStateID PreviousStateID)
+{
+	GEngine->AddOnScreenDebugMessage(
+		-1,
+		5.f,
+		FColor::Cyan,
+		TEXT("Enter Idle")
+		);
+}
+
+void USmashCharacterStateIdle::StateExit(ESmashCharacterStateID NextStateID)
+{
+	GEngine->AddOnScreenDebugMessage(
+		-1,
+		5.f,
+		FColor::Red,
+		TEXT("Exit Idle")
+		);
+}
+
