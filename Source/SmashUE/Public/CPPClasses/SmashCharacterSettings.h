@@ -21,6 +21,9 @@ public:
 	UPROPERTY(Config,EditAnywhere, Category="Inputs")
 	TSoftObjectPtr<USmashCharacterInputData> InputData;
 
+	UPROPERTY(Config, EditAnywhere, Category = "ThresholdX")
+	float InputActionMoveThresholdX;
+
 	UPROPERTY(Config, EditAnywhere, Category="Inputs")
 	TSoftObjectPtr<UInputMappingContext> InputMappingContext;
 };
