@@ -38,15 +38,21 @@ void USmashCharacterStateWalk::StateExit(ESmashCharacterStateID NextStateID)
 
 void USmashCharacterStateWalk::StateTick(float DeltaTime)
 {
-	if(Character->GetVelocity().X < MaxWalkSpeed)
-	{
-		Character->AddMovementInput(FVector(MaxWalkSpeed, 0.f, 0.f));
-	}
+	Super::StateTick(DeltaTime);
 	GEngine->AddOnScreenDebugMessage(
 		-1,
 		5.f,
 		FColor::Green,
-FString::SanitizeFloat(Character->GetVelocity().Size())
-);		
+FString::SanitizeFloat(Character->GetInputMoveX())
+);
+	if(FMath::Abs(Character->GetInputMoveX())<0.1f)
+	{
+		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
+	}
+	else 
+	{
+		Character->SetOrientX(Character->GetInputMoveX());
+		Character->AddMovementInput(FVector::ForwardVector,Character->GetOrientX());
+	}
 }
 

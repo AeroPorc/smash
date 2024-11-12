@@ -5,6 +5,7 @@
 #include "CPPClasses/SmashCharacterStateMachine.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputAction.h"
 
 // Sets default values
 ASmashCharacter::ASmashCharacter()
@@ -36,6 +37,11 @@ void ASmashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	SetupMappingContextIntoCrontroller();
+
+	UEnhancedInputComponent* LocalInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if(LocalInputComponent == nullptr) return;
+
+	BindInputMoveXAxisAndActions(LocalInputComponent);
 }
 
 float ASmashCharacter::GetOrientX() const
@@ -85,4 +91,42 @@ void ASmashCharacter::SetupMappingContextIntoCrontroller() const
 	InputSystem->AddMappingContext(InputMappingContext,0);
 }
 
+float ASmashCharacter::GetInputMoveX() const
+{
+	return InputMoveX;
+}
+
+void ASmashCharacter::BindInputMoveXAxisAndActions(UEnhancedInputComponent* LocalInputComponent)
+{
+    if(InputData == nullptr) return;
+
+    if(InputData->InputActionMoveX)
+    {
+        LocalInputComponent->BindAction
+        (
+            InputData->InputActionMoveX,
+            ETriggerEvent::Started,
+            this,
+            &ASmashCharacter::OnInputMoveX
+        );
+    	LocalInputComponent->BindAction
+		(
+			InputData->InputActionMoveX,
+			ETriggerEvent::Completed,
+			this,
+			&ASmashCharacter::OnInputMoveX
+		);
+    	LocalInputComponent->BindAction
+		(
+			InputData->InputActionMoveX,
+			ETriggerEvent::Triggered,
+			this,
+			&ASmashCharacter::OnInputMoveX
+		);
+    }
+}
+void ASmashCharacter::OnInputMoveX(const FInputActionValue& Value)
+{
+	InputMoveX = Value.Get<float>();
+}
 

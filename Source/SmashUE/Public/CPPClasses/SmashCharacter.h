@@ -70,7 +70,23 @@ public:
 protected:
 	void SetupMappingContextIntoCrontroller() const;
 
+#pragma endregion
+
+#pragma region Input Move X
+public:
+	float GetInputMoveX() const;
+	
+protected:
+	UPROPERTY()
+	float InputMoveX = 0.f;
+
+private:
+	void BindInputMoveXAxisAndActions(UEnhancedInputComponent* InputComponent);
+
+	void OnInputMoveX(const FInputActionValue& Value);
+
 #pragma endregion 
+	
 };
 
 
