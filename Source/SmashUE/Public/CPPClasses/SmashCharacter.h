@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SmashCharacterSettings.h"
 #include "GameFramework/Character.h"
 #include "SmashCharacter.generated.h"
 
@@ -17,6 +18,8 @@ class SMASHUE_API ASmashCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ASmashCharacter();
+
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -55,6 +58,19 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<USmashCharacterStateMachine> StateMachine;
 #pragma endregion
+
+#pragma region Input Data / Mapping Context
+public:
+	UPROPERTY()
+	TObjectPtr<UInputMappingContext> InputMappingContext;
+
+	UPROPERTY()
+	TObjectPtr<USmashCharacterInputData> InputData;
+
+protected:
+	void SetupMappingContextIntoCrontroller() const;
+
+#pragma endregion 
 };
 
 

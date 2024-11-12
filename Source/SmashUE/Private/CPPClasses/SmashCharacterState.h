@@ -24,10 +24,17 @@ public:
 
 	virtual void StateTick(float DeltaTime);
 
+	UPROPERTY(EditAnywhere)
+	float MaxWalkSpeed;
+
 protected:
 	UPROPERTY()
 	TObjectPtr<ASmashCharacter> Character;
 
 	UPROPERTY()
 	TObjectPtr<USmashCharacterStateMachine> StateMachine;
+
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* AnimMontage;
+	
 };

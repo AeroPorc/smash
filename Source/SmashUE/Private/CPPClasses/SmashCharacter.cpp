@@ -3,6 +3,8 @@
 
 #include "CPPClasses/SmashCharacter.h"
 #include "CPPClasses/SmashCharacterStateMachine.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 // Sets default values
 ASmashCharacter::ASmashCharacter()
@@ -32,6 +34,8 @@ void ASmashCharacter::Tick(float DeltaTime)
 void ASmashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	SetupMappingContextIntoCrontroller();
 }
 
 float ASmashCharacter::GetOrientX() const
@@ -66,4 +70,19 @@ void ASmashCharacter::TickStateMachine(float DeltaTime) const
 	if(StateMachine == nullptr) return;
 	StateMachine->Tick(DeltaTime);
 }
+
+void ASmashCharacter::SetupMappingContextIntoCrontroller() const
+{
+	APlayerController* PlayerController = Cast<APlayerController>(Controller);
+	if(PlayerController == nullptr) return;
+
+	ULocalPlayer* Player = PlayerController->GetLocalPlayer();
+	if(Player == nullptr) return;
+
+	UEnhancedInputLocalPlayerSubsystem* InputSystem = Player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	if(InputSystem == nullptr) return;
+
+	InputSystem->AddMappingContext(InputMappingContext,0);
+}
+
 

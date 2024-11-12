@@ -3,6 +3,8 @@
 
 #include "CPPClasses/SmashCharacterStateIdle.h"
 
+#include "CPPClasses/SmashCharacter.h"
+
 ESmashCharacterStateID USmashCharacterStateIdle::GetStateID()
 {
 	return ESmashCharacterStateID::Idle;
@@ -10,6 +12,7 @@ ESmashCharacterStateID USmashCharacterStateIdle::GetStateID()
 
 void USmashCharacterStateIdle::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
+	Super::StateEnter(PreviousStateID);
 	GEngine->AddOnScreenDebugMessage(
 		-1,
 		5.f,

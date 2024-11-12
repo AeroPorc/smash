@@ -23,6 +23,7 @@ public:
 	void Init(ASmashCharacter* InCharacter);
 	ASmashCharacter* GetCharacter() const;
 
+
 	UFUNCTION(BlueprintCallable)
 	void ChangeState(ESmashCharacterStateID NewStateID);
 
