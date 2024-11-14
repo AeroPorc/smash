@@ -58,6 +58,16 @@ FString::SanitizeFloat(Character->GetInputMoveX())
 		Character->SetOrientX(Character->GetInputMoveX());
 		Character->AddMovementInput(FVector::ForwardVector,Character->GetOrientX());
 	}
+	if(FMath::Abs(Character->GetInputMoveY())> Character->GetInputThresholdY())
+	{
+		GEngine->AddOnScreenDebugMessage(
+		-1,
+		5.f,
+		FColor::Red,
+		TEXT("AAAAAAAAAAAAAAAAAA")
+		);
+		StateMachine->ChangeState(ESmashCharacterStateID::Jump);
+	}
 }
 
 void USmashCharacterStateWalk::OnInputMoveXFast(float InputMoveX)

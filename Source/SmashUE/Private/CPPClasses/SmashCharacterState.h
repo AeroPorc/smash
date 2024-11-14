@@ -26,6 +26,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float MaxWalkSpeed;
+	
+
 
 protected:
 	UPROPERTY()

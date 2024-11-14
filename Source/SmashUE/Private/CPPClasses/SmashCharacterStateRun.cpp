@@ -45,11 +45,14 @@ void USmashCharacterStateRun::StateTick(float DeltaTime)
 		Character->SetOrientX(Character->GetInputMoveX());
 		Character->AddMovementInput(FVector::ForwardVector,Character->GetOrientX());
 	}
-	
-	GEngine->AddOnScreenDebugMessage(
+	if(FMath::Abs(Character->GetInputMoveY())> Character->GetInputThresholdY())
+	{
+		GEngine->AddOnScreenDebugMessage(
 		-1,
 		5.f,
-		FColor::Green,
-		FString::SanitizeFloat(Character->GetVelocity().Size())
-);		
+		FColor::Red,
+		TEXT("AAAAAAAAAAAAAAAAAA")
+		);
+		StateMachine->ChangeState(ESmashCharacterStateID::Jump);
+	}
 }

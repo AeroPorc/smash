@@ -36,6 +36,7 @@ public:
 	
 public:
 	float GetOrientX() const;
+	const USmashCharacterSettings* GetSettings() const;
 	
 	void SetOrientX(float NewOrientX);
 
@@ -79,9 +80,12 @@ public:
 	float GetInputMoveX() const;
 
 	float GetInputThresholdX() const;
+	float GetInputThresholdY() const;
 
 	UPROPERTY()
 	FInputMoveXEvent InputMoveXFastEvent;
+
+
 	
 
 	
@@ -99,6 +103,19 @@ private:
 	
 	void OnInputMoveX(const FInputActionValue& Value);
 
+#pragma endregion
+
+#pragma region Input Y
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputMoveYEvent, float, InputMoveY);
+public:
+	float GetInputMoveY() const;
+	FInputMoveYEvent InputMoveYEvent;
+protected:
+	UPROPERTY()
+	float InputMoveY = 0.f;
+private:
+	void BindInputMoveYAxisAndActions(UEnhancedInputComponent* InputComponent);
+	void OnInputMoveY(const FInputActionValue& Value);
 #pragma endregion 
 	
 };

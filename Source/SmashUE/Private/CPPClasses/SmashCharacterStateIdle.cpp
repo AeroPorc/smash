@@ -46,9 +46,22 @@ void USmashCharacterStateIdle::StateTick(float DeltaTime)
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Walk);
 	}
+	if(FMath::Abs(Character->GetInputMoveY())> Character->GetInputThresholdY())
+	{
+		GEngine->AddOnScreenDebugMessage(
+		-1,
+		5.f,
+		FColor::Red,
+		TEXT("AAAAAAAAAAAAAAAAAA")
+		);
+		StateMachine->ChangeState(ESmashCharacterStateID::Jump);
+	}
 }
 
 void USmashCharacterStateIdle::OnInputMoveXFast(float InputMoveX)
 {
 	StateMachine->ChangeState(ESmashCharacterStateID::Run);
 }
+
+
+

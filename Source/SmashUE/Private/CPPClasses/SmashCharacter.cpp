@@ -5,7 +5,10 @@
 #include "CPPClasses/SmashCharacterStateMachine.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+
+#include "CPPClasses/SmashCharacterSettings.h"
 #include "InputAction.h"
+#include "CPPClasses/CameraWorldSubsystem.h"
 
 // Sets default values
 ASmashCharacter::ASmashCharacter()
@@ -20,6 +23,8 @@ void ASmashCharacter::BeginPlay()
 	Super::BeginPlay();
 	CreateStateMachine();
 	InitStateMachine();
+
+	GetWorld()->GetSubsystem<UCameraWorldSubsystem>()->AddFollowTarget(this);
 	
 }
 
@@ -42,6 +47,7 @@ void ASmashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	if(LocalInputComponent == nullptr) return;
 
 	BindInputMoveXAxisAndActions(LocalInputComponent);
+	BindInputMoveYAxisAndActions(LocalInputComponent);
 }
 
 float ASmashCharacter::GetOrientX() const
@@ -150,3 +156,47 @@ void ASmashCharacter::OnInputMoveXFast(const FInputActionValue& InputActionValue
 	InputMoveXFastEvent.Broadcast(InputMoveX);
 }
 
+float ASmashCharacter::GetInputMoveY() const
+{
+	return InputMoveY;
+}
+void ASmashCharacter::BindInputMoveYAxisAndActions(UEnhancedInputComponent* LocalInputComponent)
+{
+	if(InputData == nullptr) return;
+
+	if(InputData->InputActionMoveY)
+	{
+		LocalInputComponent->BindAction(
+			InputData->InputActionMoveY,
+			ETriggerEvent::Started,
+			this,
+			&ASmashCharacter::OnInputMoveY
+		);
+		LocalInputComponent->BindAction(
+			InputData->InputActionMoveY,
+			ETriggerEvent::Completed,
+			this,
+			&ASmashCharacter::OnInputMoveY
+		);
+		LocalInputComponent->BindAction(
+			InputData->InputActionMoveY,
+			ETriggerEvent::Triggered,
+			this,
+			&ASmashCharacter::OnInputMoveY
+		);
+	}
+}
+void ASmashCharacter::OnInputMoveY(const FInputActionValue& Value)
+{
+	InputMoveY = Value.Get<float>();
+}
+
+float ASmashCharacter::GetInputThresholdY() const
+{
+	return GetDefault<USmashCharacterSettings>()->InputActionMoveThresholdY;
+}
+
+const USmashCharacterSettings* ASmashCharacter::GetSettings() const
+{
+	return GetDefault<USmashCharacterSettings>();
+}
