@@ -40,8 +40,8 @@ void USmashCharacterStateJump::StateEnter(ESmashCharacterStateID PreviousStateID
 		TEXT("Enter Jump")
 		);
 	Character->GetCharacterMovement()->JumpZVelocity = (2*JumpMaxHeight)/JumpDuration;
-	Character->GetCharacterMovement()->GravityScale = ((-(2*JumpMaxHeight))/(JumpDuration*JumpDuration)/10);
 	Character->Jump();
+	Character->GetCharacterMovement()->GravityScale = ((-(2*JumpMaxHeight))/(JumpDuration*JumpDuration)/10);
 	
 }
 
