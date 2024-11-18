@@ -200,3 +200,19 @@ const USmashCharacterSettings* ASmashCharacter::GetSettings() const
 {
 	return GetDefault<USmashCharacterSettings>();
 }
+
+bool ASmashCharacter::IsFollowable()
+{
+	return true;
+}
+
+FVector ASmashCharacter::GetFollowPosition()
+{
+	return GetActorLocation();
+}
+
+bool ASmashCharacter::IsFollowing() 
+{
+	return true;
+}
+
