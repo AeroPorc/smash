@@ -73,7 +73,7 @@ void USmashCharacterStateFall::StateTick(float DeltaTime)
 		// Character->GetCharacterMovement()->AirControlBoostMultiplier = 1.5;
 		Character->AddMovementInput(FVector::ForwardVector, FallHorizontalSpeed);
 	}
-	else if(Character->GetInputMoveX()==-1)
+	else if(Character->GetInputMoveX()== -1)
 	{
 		Character->GetCharacterMovement()->AirControl = FallAirControl;
 		// Character->GetCharacterMovement()->AirControlBoostMultiplier = 1.5;

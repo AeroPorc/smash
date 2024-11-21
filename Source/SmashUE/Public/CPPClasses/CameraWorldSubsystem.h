@@ -72,7 +72,6 @@ protected:
 
 	FVector CalculateWorldPositionFromViewportPosition(const FVector2D& ViewportPosition);
 #pragma endregion 
-
 #pragma region Zoom
 protected:
 	UPROPERTY()
