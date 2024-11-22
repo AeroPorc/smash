@@ -19,12 +19,14 @@ void ULocalMultiplayerSubsystem::CreateAndInitPlayers(ELocalMultiplayerInputMapp
 
     for (int i = 0; i < Settings->KeyboardProfiles.Num(); ++i)
     {
-        AssignNewPlayerToKeyboardProfile(i);
+        int PlayerIndex = AssignNewPlayerToKeyboardProfile(i);
+        AssignNewKeyboardMapping(PlayerIndex, i, MappingType);
     }
 
     for (int i = 0; i < Settings->MaxNbGamepads; ++i)
     {
-        AssignNewPlayerToGamepadDeviceID(i);
+        int PlayerIndex = AssignNewPlayerToGamepadDeviceID(i);
+        AssignGamepadInputMapping(PlayerIndex, MappingType);
     }
 }
 
@@ -47,25 +49,63 @@ int ULocalMultiplayerSubsystem::AssignNewPlayerToKeyboardProfile(int KeyboardPro
 void ULocalMultiplayerSubsystem::AssignNewKeyboardMapping(int PlayerIndex, int KeyboardProfileIndex, ELocalMultiplayerInputMappingType MappingType) const
 {
     const ULocalMultiplayerSettings* Settings = GetDefault<ULocalMultiplayerSettings>();
-    if (!Settings || !Settings->KeyboardProfiles.IsValidIndex(KeyboardProfileIndex))
+   if (!PlayerIndexFromKeyboardProfileIndex.Contains(KeyboardProfileIndex))
     {
+        UE_LOG(LogTemp, Warning, TEXT("No PlayerController associated with KeyboardProfileIndex %d"), KeyboardProfileIndex);
+        return;
+    }
+
+    if (PlayerIndexFromKeyboardProfileIndex[KeyboardProfileIndex] != PlayerIndex)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("PlayerIndex mismatch for KeyboardProfileIndex %d"), KeyboardProfileIndex);
+        return;
+    }
+    if (!Settings)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("LocalMultiplayerSettings not found"));
+        return;
+    }
+
+    if (!Settings->KeyboardProfiles.IsValidIndex(KeyboardProfileIndex))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Invalid KeyboardProfileIndex: %d"), KeyboardProfileIndex);
         return;
     }
 
     const FLocalMultiplayerProfileData& ProfileData = Settings->KeyboardProfiles[KeyboardProfileIndex];
+
     UInputMappingContext* IMC = ProfileData.GetIMCFromType(MappingType);
-    if (IMC)
+    if (!IMC)
     {
-        APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), PlayerIndex);
-        if (PlayerController)
-        {
-            UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-            if (Subsystem)
-            {
-                Subsystem->AddMappingContext(IMC, 1);
-            }
-        }
+        UE_LOG(LogTemp, Warning, TEXT("Input Mapping Context not found for MappingType"));
+        return;
     }
+
+    UGameInstance* GameInstance = GetGameInstance();
+    ULocalPlayer* LocalPlayer = GameInstance->GetLocalPlayerByIndex(PlayerIndex);
+
+    if(LocalPlayer == nullptr)
+    {
+        FString OutError;
+        LocalPlayer = GameInstance->CreateLocalPlayer(PlayerIndex,  OutError, true);
+    }
+    UE_LOG(LogTemp, Warning, TEXT("GetGameInstance()->GetNumLocalPlayers %d"), GameInstance->GetNumLocalPlayers());
+    
+    APlayerController* PlayerController = LocalPlayer->GetPlayerController(GameInstance->GetWorld());
+    if (!PlayerController)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("PlayerController not found for PlayerIndex %d"), PlayerIndex);
+        return;
+    }
+
+    UEnhancedInputLocalPlayerSubsystem* InputSubsystem = PlayerController->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+    if (InputSubsystem == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("InputSubsystem not found for PlayerController"));
+        return;
+    }
+
+    InputSubsystem->AddMappingContext(IMC, 1);
 }
 
 int ULocalMultiplayerSubsystem::GetAssignedPlayerIndexFromGamepadDeviceID(int DeviceID)

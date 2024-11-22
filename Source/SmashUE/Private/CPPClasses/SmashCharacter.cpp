@@ -41,7 +41,7 @@ void ASmashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	SetupMappingContextIntoCrontroller();
+	// SetupMappingContextIntoCrontroller();
 
 	UEnhancedInputComponent* LocalInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if(LocalInputComponent == nullptr) return;

@@ -3,6 +3,9 @@
 
 #include "LocalMultiplayerGameViewportClient.h"
 #include "LocalMultiplayerGameViewportClient.h"
+
+#include "LocalMultiplayerSettings.h"
+#include "LocalMultiplayerSubsystem.h"
 #include "Engine/Engine.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
@@ -16,70 +19,62 @@ void ULocalMultiplayerGameViewportClient::PostInitProperties()
 
 bool ULocalMultiplayerGameViewportClient::InputKey(const FInputKeyEventArgs& EventArgs)
 {
-    int32 PlayerIndex = EventArgs.ControllerId;
+    if(GameInstance == nullptr) return false;
+    
+    const ULocalMultiplayerSettings* LocalMultiplayerSettings = GetDefault<ULocalMultiplayerSettings>();
+    ULocalMultiplayerSubsystem* LocalMultiplayerSubsystem = GameInstance->GetSubsystem<ULocalMultiplayerSubsystem>();
+    
+    if (LocalMultiplayerSettings == nullptr || LocalMultiplayerSubsystem == nullptr) return false;
+    
+    int KeyboardProfileIndex = LocalMultiplayerSettings->FindKeyboardProfileIndex(EventArgs.Key, ELocalMultiplayerInputMappingType::InGame);
+    
+    int PlayerIndex = LocalMultiplayerSubsystem->GetAssignedPlayerIndexFromKeyboardProfileIndex(KeyboardProfileIndex);
 
-    if (EventArgs.Key.IsGamepadKey())
+    if(PlayerIndex < 0) return false;
+    
+    ULocalPlayer* LocalPlayer = GameInstance->GetLocalPlayerByIndex(PlayerIndex);
+    if (LocalPlayer == nullptr)
     {
-        UE_LOG(LogTemp, Log, TEXT("Gamepad button pressed by Player %d"), PlayerIndex);
+        UE_LOG(LogTemp, Warning, TEXT("ULocalMultiplayerGameViewportClient::InputKey, LocalPlayer is nullptr"));
+        return false;
     }
-    else
+    
+    APlayerController* PlayerController = LocalPlayer->GetPlayerController(GameInstance->GetWorld());
+    if (PlayerController == nullptr)
     {
-        UE_LOG(LogTemp, Log, TEXT("Keyboard key pressed by Player %d"), PlayerIndex);
+        UE_LOG(LogTemp, Warning, TEXT("ULocalMultiplayerGameViewportClient::InputKey, pLAYERCONTROLLER is nullptr"));
 
-        if (EventArgs.Key == EKeys::W)
-        {
-            PlayerIndex = 0; 
-            UE_LOG(LogTemp, Log, TEXT("Player %d pressed W key"), PlayerIndex);
-        }
-        else if (EventArgs.Key == EKeys::A)
-        {
-            PlayerIndex = 1; 
-            UE_LOG(LogTemp, Log, TEXT("Player %d pressed A key"), PlayerIndex);
-        }
-        else if (EventArgs.Key == EKeys::S)
-        {
-            PlayerIndex = 2; 
-            UE_LOG(LogTemp, Log, TEXT("Player %d pressed S key"), PlayerIndex);
-        }
-        else if (EventArgs.Key == EKeys::D)
-        {
-            PlayerIndex = 3; 
-            UE_LOG(LogTemp, Log, TEXT("Player %d pressed D key"), PlayerIndex);
-        }
+        return false;
     }
-
-    return Super::InputKey(EventArgs);
+    
+    UE_LOG(LogTemp, Display, TEXT("ULocalMultiplayerGameViewportClient::InputKey, InputKey: Key = %s, PlayerIndex = %d, "), *EventArgs.Key.ToString(), PlayerIndex);
+    return PlayerController->InputKey(EventArgs.Key, EventArgs.Event, EventArgs.AmountDepressed, EventArgs.IsGamepad());
 }
 bool ULocalMultiplayerGameViewportClient::InputAxis(FViewport* InViewport, FInputDeviceId InputDevice, FKey Key, float Delta, float DeltaTime, int32 NumSamples, bool bGamepad)
 {
-    int32 PlayerIndex = InputDevice.GetId();
+    if(GameInstance == nullptr) return false;
+    
+    const ULocalMultiplayerSettings* LocalMultiplayerSettings = GetDefault<ULocalMultiplayerSettings>();
+    ULocalMultiplayerSubsystem* LocalMultiplayerSubsystem = GameInstance->GetSubsystem<ULocalMultiplayerSubsystem>();
+    
+    if (LocalMultiplayerSettings == nullptr || LocalMultiplayerSubsystem == nullptr) return false;
+    
+    int PlayerIndex = LocalMultiplayerSubsystem->GetAssignedPlayerIndexFromGamepadDeviceID(InputDevice.GetId());
 
-    if (bGamepad)
+    if(PlayerIndex < 0) return false;
+    
+    ULocalPlayer* LocalPlayer = GameInstance->GetLocalPlayerByIndex(PlayerIndex);
+    if (LocalPlayer == nullptr)
     {
-        UE_LOG(LogTemp, Log, TEXT("Gamepad axis moved by Player %d"), PlayerIndex);
-
-   
-        if (Key == EKeys::Gamepad_LeftX)
-        {
-            PlayerIndex = 0;
-            UE_LOG(LogTemp, Log, TEXT("Player %d moved left joystick horizontally with delta %f"), PlayerIndex, Delta);
-        }
-        else if (Key == EKeys::Gamepad_LeftY)
-        {
-            PlayerIndex = 1; 
-            UE_LOG(LogTemp, Log,    TEXT("Player %d moved left joystick vertically with delta %f"), PlayerIndex, Delta);
-        }
-        else if (Key == EKeys::Gamepad_RightX)
-        {
-            PlayerIndex = 2; 
-            UE_LOG(LogTemp, Log, TEXT("Player %d moved right joystick horizontally with delta %f"), PlayerIndex, Delta);
-        }
-        else if (Key == EKeys::Gamepad_RightY)
-        {
-            PlayerIndex = 3; 
-            UE_LOG(LogTemp, Log, TEXT("Player %d moved right joystick vertically with delta %f"), PlayerIndex, Delta);
-        }
+        return false;
     }
-
-    return Super::InputAxis(InViewport, InputDevice, Key, Delta, DeltaTime, NumSamples, bGamepad);
+    
+    APlayerController* PlayerController = LocalPlayer->GetPlayerController(GameInstance->GetWorld());
+    if (PlayerController == nullptr)
+    {
+        return false;
+    }
+    
+    UE_LOG(LogTemp, Display, TEXT("ULocalMultiplayerGameViewportClient::InputKey, InputKey: Key = %s, PlayerIndex = %d, "), *Key.ToString(), PlayerIndex);
+    return PlayerController->InputAxis(Key, Delta, DeltaTime, NumSamples, bGamepad);
 }
