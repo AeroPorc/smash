@@ -28,7 +28,7 @@ bool ULocalMultiplayerGameViewportClient::InputKey(const FInputKeyEventArgs& Eve
     
     int KeyboardProfileIndex = LocalMultiplayerSettings->FindKeyboardProfileIndex(EventArgs.Key, ELocalMultiplayerInputMappingType::InGame);
     
-    int PlayerIndex = LocalMultiplayerSubsystem->GetAssignedPlayerIndexFromKeyboardProfileIndex(KeyboardProfileIndex);
+    int PlayerIndex = !EventArgs.IsGamepad() ?LocalMultiplayerSubsystem->GetAssignedPlayerIndexFromKeyboardProfileIndex(KeyboardProfileIndex) : LocalMultiplayerSubsystem->GetAssignedPlayerIndexFromGamepadDeviceID(EventArgs.InputDevice.GetId());
 
     if(PlayerIndex < 0) return false;
     
@@ -42,7 +42,7 @@ bool ULocalMultiplayerGameViewportClient::InputKey(const FInputKeyEventArgs& Eve
     APlayerController* PlayerController = LocalPlayer->GetPlayerController(GameInstance->GetWorld());
     if (PlayerController == nullptr)
     {
-        UE_LOG(LogTemp, Warning, TEXT("ULocalMultiplayerGameViewportClient::InputKey, pLAYERCONTROLLER is nullptr"));
+        UE_LOG(LogTemp, Warning, TEXT("ULocalMultiplayerGameViewportClient::InputKey, PLAYERCONTROLLER is nullptr"));
 
         return false;
     }
@@ -75,6 +75,6 @@ bool ULocalMultiplayerGameViewportClient::InputAxis(FViewport* InViewport, FInpu
         return false;
     }
     
-    UE_LOG(LogTemp, Display, TEXT("ULocalMultiplayerGameViewportClient::InputKey, InputKey: Key = %s, PlayerIndex = %d, "), *Key.ToString(), PlayerIndex);
+    UE_LOG(LogTemp, Display, TEXT("ULocalMultiplayerGameViewportClient::InputAxis, InputKey: Key = %s, PlayerIndex = %d, "), *Key.ToString(), PlayerIndex);
     return PlayerController->InputAxis(Key, Delta, DeltaTime, NumSamples, bGamepad);
 }
