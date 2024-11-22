@@ -33,6 +33,10 @@ void ASmashCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	TickStateMachine(DeltaTime);
+	if(FMath::Abs(OrientX)>=1)
+	{
+		LastOrientX=OrientX;
+	}
 	RotateMeshUsingOrientX();
 }
 
@@ -62,9 +66,11 @@ void ASmashCharacter::SetOrientX(float NewOrientX)
 
 void ASmashCharacter::RotateMeshUsingOrientX() const
 {
-	FRotator NewRotation = GetActorRotation();
-	NewRotation.Yaw = -90.0f * OrientX;
-	GetMesh()-> SetRelativeRotation(NewRotation);
+	FRotator Rotation=GetMesh()->GetRelativeRotation();
+	int X=LastOrientX;
+
+	Rotation.Yaw = -90.f*X;
+	GetMesh()->SetRelativeRotation(Rotation);
 }
 
 void ASmashCharacter::CreateStateMachine()

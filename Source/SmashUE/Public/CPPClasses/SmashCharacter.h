@@ -38,13 +38,12 @@ public:
 public:
 	float GetOrientX() const;
 	const USmashCharacterSettings* GetSettings() const;
-	
 	void SetOrientX(float NewOrientX);
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	float OrientX = 0.f;
-
+	float LastOrientX=1.f;
 	void  RotateMeshUsingOrientX() const;
 	
 #pragma endregion
