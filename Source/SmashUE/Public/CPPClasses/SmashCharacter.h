@@ -9,7 +9,7 @@
 #include "SmashCharacter.generated.h"
 
 class USmashCharacterStateMachine;
-
+class ABall;
 
 UCLASS()
 class SMASHUE_API ASmashCharacter : public ACharacter, public ICameraFollowTarget
@@ -127,6 +127,23 @@ public:
 	virtual FVector GetFollowPosition() override;
 	virtual bool IsFollowable() override;
 	virtual bool IsFollowing();
+#pragma endregion
+
+#pragma region Ball
+
+private:
+	UFUNCTION(BlueprintCallable, Category = "Ball")
+    void StartChargingBall();
+
+    UFUNCTION(BlueprintCallable, Category = "Ball")
+    void StopChargingBall();
+
+	// The ball actor
+	ABall* ChargedBall;
+
+	// The ball class to spawn
+	UPROPERTY(EditDefaultsOnly, Category = "Ball")
+	TSubclassOf<ABall> BallClass;
 #pragma endregion 
 };
 

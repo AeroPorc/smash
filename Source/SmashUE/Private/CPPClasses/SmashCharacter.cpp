@@ -9,6 +9,7 @@
 #include "CPPClasses/SmashCharacterSettings.h"
 #include "InputAction.h"
 #include "CPPClasses/CameraWorldSubsystem.h"
+#include "CPPClasses/Ball.h"
 
 // Sets default values
 ASmashCharacter::ASmashCharacter()
@@ -220,5 +221,31 @@ FVector ASmashCharacter::GetFollowPosition()
 bool ASmashCharacter::IsFollowing() 
 {
 	return true;
+}
+
+
+void ASmashCharacter::StartChargingBall()
+{
+	if (BallClass)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+
+		ChargedBall = GetWorld()->SpawnActor<ABall>(BallClass, GetActorLocation(), FRotator::ZeroRotator, SpawnParams);
+		if (ChargedBall)
+		{
+			ChargedBall->StartCharging();
+		}
+	}
+}
+
+void ASmashCharacter::StopChargingBall()
+{
+	if (ChargedBall)
+	{
+		ChargedBall->StopCharging();
+		ChargedBall = nullptr;
+	}
 }
 
