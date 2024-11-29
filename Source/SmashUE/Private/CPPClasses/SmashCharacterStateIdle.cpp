@@ -35,27 +35,21 @@ void USmashCharacterStateIdle::StateExit(ESmashCharacterStateID NextStateID)
 }
 void USmashCharacterStateIdle::StateTick(float DeltaTime)
 {
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		5.f,
-		FColor::Green,
-		TEXT("Tick Idle")
-		);
-
 	if(FMath::Abs(Character->GetInputMoveX())> Character->GetInputThresholdX())
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Walk);
 	}
 	if(FMath::Abs(Character->GetInputMoveY())> Character->GetInputThresholdY())
 	{
-		GEngine->AddOnScreenDebugMessage(
-		-1,
-		5.f,
-		FColor::Red,
-		TEXT("AAAAAAAAAAAAAAAAAA")
-		);
 		StateMachine->ChangeState(ESmashCharacterStateID::Jump);
 	}
+	if(FMath::Abs(Character->GetInputSpecialAction()) > Character->GetInputSpecialActionThreshold())
+	{
+		StateMachine->ChangeState(ESmashCharacterStateID::Special);
+		Character->SetInputSpecialAction(0.0f);
+	}
+	
+	
 }
 
 void USmashCharacterStateIdle::OnInputMoveXFast(float InputMoveX)

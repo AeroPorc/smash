@@ -9,6 +9,8 @@
 #include "Engine/Engine.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
+#include "InputCoreTypes.h"
+#include "GameFramework/PlayerInput.h"
 #include "Kismet/GameplayStatics.h"
 
 void ULocalMultiplayerGameViewportClient::PostInitProperties()
@@ -48,7 +50,8 @@ bool ULocalMultiplayerGameViewportClient::InputKey(const FInputKeyEventArgs& Eve
     }
     
     UE_LOG(LogTemp, Display, TEXT("ULocalMultiplayerGameViewportClient::InputKey, InputKey: Key = %s, PlayerIndex = %d, "), *EventArgs.Key.ToString(), PlayerIndex);
-    return PlayerController->InputKey(EventArgs.Key, EventArgs.Event, EventArgs.AmountDepressed, EventArgs.IsGamepad());
+    FInputKeyParams params=FInputKeyParams(EventArgs.Key,EventArgs.Event,EventArgs.AmountDepressed,EventArgs.IsGamepad(),EventArgs.InputDevice);
+    return PlayerController->InputKey(params);
 }
 bool ULocalMultiplayerGameViewportClient::InputAxis(FViewport* InViewport, FInputDeviceId InputDevice, FKey Key, float Delta, float DeltaTime, int32 NumSamples, bool bGamepad)
 {
@@ -76,5 +79,7 @@ bool ULocalMultiplayerGameViewportClient::InputAxis(FViewport* InViewport, FInpu
     }
     
     UE_LOG(LogTemp, Display, TEXT("ULocalMultiplayerGameViewportClient::InputAxis, InputKey: Key = %s, PlayerIndex = %d, "), *Key.ToString(), PlayerIndex);
-    return PlayerController->InputAxis(Key, Delta, DeltaTime, NumSamples, bGamepad);
+    FInputKeyParams params=FInputKeyParams(Key,Delta,DeltaTime,NumSamples,bGamepad,InputDevice);
+    return PlayerController->InputKey(params);
+
 }

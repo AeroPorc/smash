@@ -17,20 +17,16 @@ class SMASHUE_API ASmashCharacter : public ACharacter, public ICameraFollowTarge
 	GENERATED_BODY()
 #pragma  region Unreal Default
 public:
-	// Sets default values for this character's properties
 	ASmashCharacter();
 
 
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 #pragma endregion
 #pragma region Orient
@@ -39,6 +35,7 @@ public:
 	float GetOrientX() const;
 	const USmashCharacterSettings* GetSettings() const;
 	void SetOrientX(float NewOrientX);
+	void SetInputSpecialAction(float X);
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
@@ -81,6 +78,7 @@ public:
 
 	float GetInputThresholdX() const;
 	float GetInputThresholdY() const;
+	float GetInputSpecialActionThreshold() const;
 
 	UPROPERTY()
 	FInputMoveXEvent InputMoveXFastEvent;
@@ -117,8 +115,16 @@ private:
 	void BindInputMoveYAxisAndActions(UEnhancedInputComponent* InputComponent);
 	void OnInputMoveY(const FInputActionValue& Value);
 
-
-
+#pragma region Special Action
+public:
+	float GetInputSpecialAction() const;
+protected:
+	UPROPERTY()
+	float InputSpecialAction =  0.f;
+private:
+	void BindInputSpecialActionAndActions(UEnhancedInputComponent* InputComponent);
+	void OnInputSpecialAction(const FInputActionValue& Value);
+#pragma endregion
 private:
 #pragma endregion 
 #pragma region Camera
@@ -131,17 +137,10 @@ public:
 
 #pragma region Ball
 
-private:
+public:
 	UFUNCTION(BlueprintCallable, Category = "Ball")
-    void StartChargingBall();
-
-    UFUNCTION(BlueprintCallable, Category = "Ball")
-    void StopChargingBall();
-
-	// The ball actor
-	ABall* ChargedBall;
-
-	// The ball class to spawn
+	void LaunchBall();
+private:
 	UPROPERTY(EditDefaultsOnly, Category = "Ball")
 	TSubclassOf<ABall> BallClass;
 #pragma endregion 

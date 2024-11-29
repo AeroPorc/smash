@@ -27,6 +27,9 @@ public:
 	UPROPERTY(Config, EditAnywhere, Category = "ThresholdY")
 	float InputActionMoveThresholdY;
 
+	UPROPERTY(Config, EditAnywhere, Category = "ThresholdSpecialAction")
+	float InputSpecialActionThreshold;
+
 	UPROPERTY(Config, EditAnywhere, Category="Inputs")
 	TSoftObjectPtr<UInputMappingContext> InputMappingContext;
 };

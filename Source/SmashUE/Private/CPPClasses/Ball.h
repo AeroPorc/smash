@@ -8,32 +8,49 @@ UCLASS()
 class SMASHUE_API ABall : public AActor
 {
 	GENERATED_BODY()
-    
-public:    
+
+public:
 	ABall();
 
 protected:
 	virtual void BeginPlay() override;
 
-public:    
+public:
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable, Category = "Ball")
-	void StartCharging();
-
-	UFUNCTION(BlueprintCallable, Category = "Ball")
-	void StopCharging();
-
-private:
-	float CurrentSize;
-	float GrowthRate;
-	bool bIsCharging;
-
-	FTimerHandle DestroyTimerHandle;
-
-	UFUNCTION()
 	void DestroyBall();
 
+	FVector CurrentVelocity;
+
+	UPROPERTY(EditAnywhere, Category = "Ball")
+	float Speed; 
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = "Movement")
+	class UProjectileMovementComponent* ProjectileMovement;
+
+	UPROPERTY(EditAnywhere, Category = "Ball")
+	float Amplitude;
+
+	UPROPERTY(EditAnywhere, Category = "Ball")
+	float Frequency;
+
+	UPROPERTY(EditAnywhere, Category = "Ball")
+	float ThrowStrength;
+
+	UPROPERTY(EditAnywhere, Category = "Ball")
+	float LifeTime;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball", meta = (AllowPrivateAccess = "true"))
+	float Gravity; 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball", meta = (AllowPrivateAccess = "true"))
+	float BounceDamping; 
+
+
+
+	FVector InitialLocation;
+	FTimerHandle DestroyTimerHandle;
+	 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 };

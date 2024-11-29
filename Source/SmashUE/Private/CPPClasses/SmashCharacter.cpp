@@ -53,6 +53,7 @@ void ASmashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	BindInputMoveXAxisAndActions(LocalInputComponent);
 	BindInputMoveYAxisAndActions(LocalInputComponent);
+	BindInputSpecialActionAndActions(LocalInputComponent);
 }
 
 float ASmashCharacter::GetOrientX() const
@@ -203,6 +204,11 @@ float ASmashCharacter::GetInputThresholdY() const
 	return GetDefault<USmashCharacterSettings>()->InputActionMoveThresholdY;
 }
 
+float ASmashCharacter::GetInputSpecialActionThreshold() const
+{
+	return GetDefault<USmashCharacterSettings>()->InputSpecialActionThreshold;
+}
+
 const USmashCharacterSettings* ASmashCharacter::GetSettings() const
 {
 	return GetDefault<USmashCharacterSettings>();
@@ -224,28 +230,68 @@ bool ASmashCharacter::IsFollowing()
 }
 
 
-void ASmashCharacter::StartChargingBall()
+void ASmashCharacter::LaunchBall()
 {
 	if (BallClass)
 	{
+		FVector SpawnLocation = GetActorLocation() + GetActorForwardVector() * 100.0f * LastOrientX;
+		FRotator SpawnRotation = GetActorRotation();
+
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = GetInstigator();
 
-		ChargedBall = GetWorld()->SpawnActor<ABall>(BallClass, GetActorLocation(), FRotator::ZeroRotator, SpawnParams);
-		if (ChargedBall)
+		ABall* Ball = GetWorld()->SpawnActor<ABall>(BallClass, SpawnLocation, SpawnRotation, SpawnParams);
+		if (Ball)
 		{
-			ChargedBall->StartCharging();
+			Ball->CurrentVelocity.X = Ball->Speed * LastOrientX;
 		}
 	}
 }
 
-void ASmashCharacter::StopChargingBall()
+void ASmashCharacter::BindInputSpecialActionAndActions(UEnhancedInputComponent* LocalInputComponent)
 {
-	if (ChargedBall)
+	if(InputData == nullptr) return;
+
+	if(InputData->InputSpecialAction)
 	{
-		ChargedBall->StopCharging();
-		ChargedBall = nullptr;
+		LocalInputComponent->BindAction(
+			InputData->InputSpecialAction,
+			ETriggerEvent::Started,
+			this,
+			&ASmashCharacter::OnInputSpecialAction
+		);
+		LocalInputComponent->BindAction(
+			InputData->InputSpecialAction,
+			ETriggerEvent::Triggered,
+			this,
+			&ASmashCharacter::OnInputSpecialAction
+		);
+		LocalInputComponent->BindAction(
+			InputData->InputSpecialAction,
+			ETriggerEvent::Completed,
+			this,
+			&ASmashCharacter::OnInputSpecialAction
+		);
 	}
 }
+
+void ASmashCharacter::OnInputSpecialAction(const FInputActionValue& Value)
+{
+	InputSpecialAction = Value.Get<float>();
+}
+
+float ASmashCharacter::GetInputSpecialAction() const
+{
+	return InputSpecialAction;
+}
+
+void ASmashCharacter::SetInputSpecialAction(float X)
+{
+	InputSpecialAction = X;
+}
+
+
+
+
 

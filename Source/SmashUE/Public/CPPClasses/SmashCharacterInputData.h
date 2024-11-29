@@ -27,5 +27,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UInputAction> InputActionMoveY;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UInputAction> InputSpecialAction;
 	
 };

@@ -68,7 +68,11 @@ FString::SanitizeFloat(Character->GetInputMoveX())
 		);
 		StateMachine->ChangeState(ESmashCharacterStateID::Jump);
 	}
-}
+	if(FMath::Abs(Character->GetInputSpecialAction()) > Character->GetInputSpecialActionThreshold())
+	{
+		StateMachine->ChangeState(ESmashCharacterStateID::Special);
+		Character->SetInputSpecialAction(0.0f);
+	}}
 
 void USmashCharacterStateWalk::OnInputMoveXFast(float InputMoveX)
 {
