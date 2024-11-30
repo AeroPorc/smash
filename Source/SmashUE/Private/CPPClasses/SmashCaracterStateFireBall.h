@@ -20,4 +20,14 @@ public:
 	virtual void StateTick(float DeltaTime) override;
 	UFUNCTION()
 	void OnInputMoveXFast(float InputMoveX);
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="FireBall")
+	float StateDuration = 1.0f;
+
+private:
+	FTimerHandle TimerHandle;
+	UFUNCTION()
+	void OnTimerEnd();
+	bool TimerEnded;
 };

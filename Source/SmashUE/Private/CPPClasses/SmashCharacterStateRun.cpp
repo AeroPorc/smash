@@ -58,6 +58,5 @@ void USmashCharacterStateRun::StateTick(float DeltaTime)
 	if(FMath::Abs(Character->GetInputSpecialAction()) > Character->GetInputSpecialActionThreshold())
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Special);
-		Character->SetInputSpecialAction(0.0f);
 	}
 }

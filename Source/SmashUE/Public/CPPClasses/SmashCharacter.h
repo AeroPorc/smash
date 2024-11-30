@@ -35,7 +35,6 @@ public:
 	float GetOrientX() const;
 	const USmashCharacterSettings* GetSettings() const;
 	void SetOrientX(float NewOrientX);
-	void SetInputSpecialAction(float X);
 
 protected:
 	UPROPERTY(BlueprintReadOnly)

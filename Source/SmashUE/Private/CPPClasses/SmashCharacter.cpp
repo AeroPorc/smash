@@ -286,10 +286,7 @@ float ASmashCharacter::GetInputSpecialAction() const
 	return InputSpecialAction;
 }
 
-void ASmashCharacter::SetInputSpecialAction(float X)
-{
-	InputSpecialAction = X;
-}
+
 
 
 
