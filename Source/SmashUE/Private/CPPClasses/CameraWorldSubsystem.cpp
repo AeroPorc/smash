@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "CPPClasses/SmashCharacter.h"
 #include "CPPClasses/UCameraSettings.h"
+#include "CPPClasses/Ball.h"
 
 
 void UCameraWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
@@ -34,12 +35,14 @@ void UCameraWorldSubsystem::Tick(float DeltaTime)
 void UCameraWorldSubsystem::AddFollowTarget(UObject* Target)
 {
 	if(Target == nullptr) return;
+	if (Target->IsA(ABall::StaticClass())) return;
 	FollowTargets.Add(Target);
 }
 
 void UCameraWorldSubsystem::RemoveFollowTarget(UObject* Target)
 {
 	if(Target == nullptr) return;
+	if (Target->IsA(ABall::StaticClass())) FollowTargets.Remove(Target);
 	FollowTargets.Remove(Target);
 }
 

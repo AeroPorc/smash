@@ -23,7 +23,11 @@ public:
 	FVector CurrentVelocity;
 
 	UPROPERTY(EditAnywhere, Category = "Ball")
-	float Speed; 
+	float Speed;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ball", meta = (AllowPrivateAccess = "true"))
+	AActor* OwnerActor;
+
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
@@ -44,7 +48,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball", meta = (AllowPrivateAccess = "true"))
 	float Gravity; 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ball", meta = (AllowPrivateAccess = "true"))
-	float BounceDamping; 
+	float BounceDamping;
+
 
 
 

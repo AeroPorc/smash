@@ -50,19 +50,16 @@ void ABall::Tick(float DeltaTime)
 
     FVector CurrentLocation = GetActorLocation();
 
-    
-
     CurrentVelocity.Z += Gravity * DeltaTime;
-
     CurrentLocation += CurrentVelocity * DeltaTime;
 
     FHitResult HitResult;
     FVector Start = CurrentLocation;
-    FVector End = CurrentLocation + FVector::DownVector * 50.f; 
+    FVector End = CurrentLocation + FVector::DownVector * 50.f;
 
     FCollisionQueryParams CollisionParams;
     CollisionParams.AddIgnoredActor(this);
-    CollisionParams.AddIgnoredActor(Owner);
+    CollisionParams.AddIgnoredActor(OwnerActor);
 
     bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_MAX, CollisionParams);
     DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1, 0, 1);
@@ -84,7 +81,7 @@ void ABall::Tick(float DeltaTime)
                     CurrentVelocity.Z = FMath::Abs(CurrentVelocity.Z) * BounceDamping;
                     if (CurrentVelocity.Z < 100.f)
                     {
-                        CurrentVelocity.Z = 100.f; 
+                        CurrentVelocity.Z = 100.f;
                     }
                 }
             }
@@ -104,10 +101,9 @@ void ABall::Tick(float DeltaTime)
                         CurrentLocation.X, CurrentLocation.Y, CurrentLocation.Z,
                         CurrentVelocity.X, CurrentVelocity.Z));
 }
-
 void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
-    if (OtherActor && OtherActor != GetOwner())
+    if (OtherActor && OtherActor != OwnerActor)
     {
         if (OtherActor->IsA(ASmashCharacter::StaticClass()))
         {

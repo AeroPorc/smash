@@ -245,6 +245,13 @@ void ASmashCharacter::LaunchBall()
 		if (Ball)
 		{
 			Ball->CurrentVelocity.X = Ball->Speed * LastOrientX;
+			Ball->OwnerActor = this;
+			Ball->SetOwner(nullptr);
+
+			Ball->Tags.Add(FName("IgnoreCamera"));
+			// Ball->SetActorHiddenInGame(true);
+			// Ball->SetActorEnableCollision(false);
+			// Ball->SetActorTickEnabled(false);
 		}
 	}
 }
